@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tracert", "tracert.csproj", "{D526FF0C-02B4-4B87-BF6A-607DD71B2904}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D526FF0C-02B4-4B87-BF6A-607DD71B2904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D526FF0C-02B4-4B87-BF6A-607DD71B2904}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D526FF0C-02B4-4B87-BF6A-607DD71B2904}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D526FF0C-02B4-4B87-BF6A-607DD71B2904}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A55CDA1-9F86-4480-A151-2D46235115E1}
+	EndGlobalSection
+EndGlobal
