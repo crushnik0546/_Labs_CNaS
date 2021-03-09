@@ -31,6 +31,7 @@ namespace tracert
             packet.data_size = packet.data.Length;
             packet.CalcCheckSum();
 
+            // размер данных ICMP пакета + 8 байт заголовка
             int packet_size = packet.data_size + 8;
 
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Icmp);
@@ -66,11 +67,13 @@ namespace tracert
                             TimeSpan delta = DateTime.Now - start_time;
                             ICMP reply = new ICMP(buffer, recived_bytes);
 
+                            // истечение времени жизни пакета (ttl = 0)
                             if (reply.type == 11)
                             {
                                 Console.Write("{0, 10}", delta.Milliseconds + " мс");
                             }
-
+                            
+                            // получен echo-reply
                             if (reply.type == 0)
                             {
                                 Console.Write("{0, 10}", delta.Milliseconds + " мс");
@@ -138,8 +141,10 @@ namespace tracert
             type = 8;
         }
 
+        // конструктор для ICMP пакета, который пришел в ответ на echo-request
         public ICMP(byte[] packet, int count_of_bytes)
         {
+            // первый байт после заголовка IP (начало заголовка ICMP)
             type = packet[20];
             code = packet[21];
             check_sum = BitConverter.ToUInt16(packet, 22);
