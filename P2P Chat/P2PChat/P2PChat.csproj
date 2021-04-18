@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>chatbubbles_120836.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -97,6 +100,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="message_icon_184256.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="group_chat_conversation_people_messages_icon_179430.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="chatbubbles_120836.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="interview_chat_message_conversation_icon_179854.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -49,7 +49,7 @@ namespace P2PChat.Protocols
                 udpClient.Close();
 
                 currentTime = DateTime.Now;
-                string connectMess = $"{currentTime} : IP [{chooseIP}] : {login} подключился к чату\n";
+                string connectMess = $"{currentTime} : IP [{chooseIP}] {login} подключился к чату\n";
                 chatHistory.Append(connectMess);
                 updateChat($"{currentTime} : IP [{chooseIP}] Вы ({login}) подключились к чату\n");
 
@@ -83,7 +83,7 @@ namespace P2PChat.Protocols
                 newClient.SendMessage(new Message(Message.CONNECT, myOwnLogin));
 
                 currentTime = DateTime.Now;
-                string infoMess = $"{currentTime} : IP [{newClient.IP}] {newClient.login} : Присоединился к чату\n";
+                string infoMess = $"{currentTime} : IP [{newClient.IP}] {newClient.login} подключился к чату\n";
 
                 synchronizationContext.Post(delegate { updateChat(infoMess); }, null);
                 
@@ -134,7 +134,7 @@ namespace P2PChat.Protocols
 
                         case Message.DISCONNECT:
                             currentTime = DateTime.Now;
-                            infoMes = $"{currentTime} : IP [{client.IP}] {client.login} Покинул чат\n";
+                            infoMes = $"{currentTime} : IP [{client.IP}] {client.login} покинул чат\n";
                             synchronizationContext.Post(delegate { updateChat(infoMes); chatHistory.Append(infoMes); }, null);
                             clients.Remove(client);
                             break;
