@@ -33,9 +33,7 @@ namespace P2PChat
 
             txtbxMessage.IsEnabled = false;
             btnSend.IsEnabled = false;
-            txtboxChatWindow.IsReadOnly = true;
             btnConnect.IsDefault = true;
-            txtboxChatWindow.ScrollToEnd();
 
             ipList = Funcs.GetIPList();
             foreach(IPAddress ip in ipList)
@@ -73,6 +71,7 @@ namespace P2PChat
             string currMess = txtbxMessage.Text;
             connection.SendNormalMessage(currMess);
             txtbxMessage.Text = "";
+            txtboxChatWindow.ScrollToEnd();
         }
 
         private void UpdateChat(string text)

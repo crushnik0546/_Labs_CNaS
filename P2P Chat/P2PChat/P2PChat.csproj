@@ -58,7 +58,7 @@
     <Compile Include="Additional\Funcs.cs" />
     <Compile Include="Clients_Mess\Client.cs" />
     <Compile Include="Clients_Mess\Message.cs" />
-    <Compile Include="Protocols\Ptocol.cs" />
+    <Compile Include="Protocols\Protocol.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

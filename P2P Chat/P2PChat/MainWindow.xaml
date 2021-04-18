@@ -11,7 +11,7 @@
         <ComboBox x:Name="cmboxUserIP" HorizontalAlignment="Left" Margin="557,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmboxUserIP_SelectionChanged"/>
         <Button x:Name="btnSend" Content="Send" HorizontalAlignment="Left" Margin="557,327,0,0" VerticalAlignment="Top" Width="120" Height="33" Click="btnSend_Click"/>
         <TextBox x:Name="txtbxMessage" HorizontalAlignment="Left" Height="182" Margin="557,140,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtboxChatWindow" HorizontalAlignment="Left" Height="350" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="535"/>
+        <TextBox x:Name="txtboxChatWindow" HorizontalAlignment="Left" Height="350" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="535" ScrollViewer.VerticalScrollBarVisibility = "Auto" IsReadOnly="True" ScrollViewer.CanContentScroll="True"/>
         <TextBox x:Name="txtbxLogin" HorizontalAlignment="Left" Height="23" Margin="557,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="lbLogin" Content="Login:" HorizontalAlignment="Left" Margin="557,36,0,0" VerticalAlignment="Top" Width="120"/>
 
