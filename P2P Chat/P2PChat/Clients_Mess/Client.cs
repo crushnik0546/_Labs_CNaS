@@ -55,8 +55,16 @@ namespace P2PChat.Clients_Mess
 
             do
             {
-                int size = messStream.Read(buff, 0, buff.Length);
-                message.Append(Encoding.UTF8.GetString(buff, 0, size));
+                try
+                {
+                    int size = messStream.Read(buff, 0, buff.Length);
+                    message.Append(Encoding.UTF8.GetString(buff, 0, size));
+                }
+                catch
+                {
+                    return new Message(Message.DISCONNECT, "");
+                }
+
             }
             while (messStream.DataAvailable);
 

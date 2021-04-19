@@ -113,8 +113,7 @@ namespace P2PChat.Protocols
         {
             while (true)
             {
-                if (client.messStream.DataAvailable)
-                {
+                
                     Message tcpMessage = client.ReceiveMessage();
                     string infoMes;
 
@@ -137,7 +136,7 @@ namespace P2PChat.Protocols
                             infoMes = $"{currentTime} : IP [{client.IP}] {client.login} покинул чат\n";
                             synchronizationContext.Post(delegate { updateChat(infoMes); chatHistory.Append(infoMes); }, null);
                             clients.Remove(client);
-                            break;
+                            return;
 
                         case Message.GET_HISTORY:
                             SendHistoryMessage(client);
@@ -151,7 +150,7 @@ namespace P2PChat.Protocols
                             MessageBox.Show("Неверный формат сообщения", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
                             break;
                     }
-                }
+                
             }
         }
 
@@ -201,9 +200,11 @@ namespace P2PChat.Protocols
             if (tcpMes.code == Message.MESSAGE)
             {
                 currentTime = DateTime.Now;
-                string infoMessage = $"{currentTime} : IP [{chooseIP}] {myOwnLogin} : {tcpMes.data}\n";
+                string infoMessage = $"{currentTime} : IP [{chooseIP}] Вы : {tcpMes.data}\n";
 
                 updateChat(infoMessage);
+
+                infoMessage = $"{currentTime} : IP [{chooseIP}] {myOwnLogin} : {tcpMes.data}\n";
                 chatHistory.Append(infoMessage);
             }
 
