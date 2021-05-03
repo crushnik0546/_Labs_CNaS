@@ -59,10 +59,10 @@ namespace P2PChat.Protocols
                 Task recieveTCP = new Task(ReceiveTCP);
                 recieveTCP.Start();
             }
-           catch
-           {
-               MessageBox.Show("Sending Error!", "BAD", MessageBoxButton.OKCancel);
-           }
+            catch
+            {
+                MessageBox.Show("Sending Error!", "BAD", MessageBoxButton.OKCancel);
+            }
         }
 
         private void ReceiveBroadcast()
