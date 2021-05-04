@@ -61,18 +61,23 @@ namespace Proxy_Server
         }
 
         private string ConvertUri(string request)
-        {
-            if (request == null) return null;
-
+        { 
             const string pattern = @"http:\/\/[a-z0-9а-яё\:\.]*";
             Regex regex = new Regex(pattern);
-
             MatchCollection matches = regex.Matches(request);
-            string uri = matches[0].Value;
-            absolutePath = uri;
-            string result = request.Replace(uri, "");
 
-            return result;
+            if (matches.Count != 0)
+            {
+                string uri = matches[0].Value;
+                absolutePath = uri;
+                string result = request.Replace(uri, "");
+
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
@@ -13,6 +13,7 @@ namespace Proxy_Server
     {
         private readonly int tcpPort = 9998;
         private IPAddress localHost = IPAddress.Parse("127.0.0.1");
+        private string errorPagePath = "ErrorPage.html";
 
         public void Run()
         {
@@ -48,10 +49,13 @@ namespace Proxy_Server
                 int clientRequestLength;
                 (clientRequest, clientRequestLength) = ReadStream(clientStream);
 
-                if (Encoding.UTF8.GetString(clientRequest).Contains("CONNECT"))
-                    return;
-
                 HttpRequest httpClientRequest = new HttpRequest(Encoding.UTF8.GetString(clientRequest));
+
+                if (httpClientRequest.host != null && IsBlackList(httpClientRequest.host.HostName))
+                {
+                    ProcessBlackListRequest(clientStream, httpClientRequest);
+                    throw new Exception();
+                }
 
                 Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 IPEndPoint serverHost = new IPEndPoint(httpClientRequest.ip, httpClientRequest.port);
@@ -123,6 +127,53 @@ namespace Proxy_Server
             else
             {
                 return null;
+            }
+        }
+
+        private bool IsBlackList(string hostname)
+        {
+            bool res = false;
+
+            using (StreamReader reader = new StreamReader("Black_list.txt"))
+            {
+                string line;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line.Contains(hostname))
+                    {
+                        res = true;
+                        break;
+                    }
+                }
+            }
+            return res;
+        }
+
+        private void ProcessBlackListRequest(NetworkStream clientStream, HttpRequest request)
+        {
+            byte[] errorResponse = LoadErrorPage();
+            clientStream.Write(errorResponse, 0, errorResponse.Length);
+
+            string response = $"RESPONSE TO {request.host.HostName}\nStatus: 403 Forbidden";
+            Log.LogData(request.modifiedRequest.Split('\0')[0], response);
+        }
+
+        private byte[] LoadErrorPage()
+        {
+            using (FileStream fs = new FileStream(errorPagePath, FileMode.Open))
+            {
+                byte[] page = new byte[fs.Length];
+                fs.Read(page, 0, page.Length);
+
+                string header = "HTTP/1.1 403 Forbidden\r\nContent-Type: text/html\r\nContent-Length: "
+                            + page.Length + "\r\n\r\n";
+
+                byte[] fullData = new byte[header.Length + page.Length];
+                Array.Copy(Encoding.UTF8.GetBytes(header), 0, fullData, 0, Encoding.UTF8.GetBytes(header).Length);
+                Array.Copy(page, 0, fullData, Encoding.UTF8.GetBytes(header).Length, page.Length);
+
+                return fullData;
             }
         }
     }
