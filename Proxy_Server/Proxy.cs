@@ -25,10 +25,7 @@ namespace Proxy_Server
                 while (true)
                 { 
                     Socket client = tcpListener.AcceptSocket();
-                    //Task.Factory.StartNew(() => ClientRequestProcessing(client));
                     Task.Run(() => ClientRequestProcessing(client));
-                    // Shutdown and end connection
-                    //client.Close();
                 }
             }
             catch (SocketException e)
@@ -44,21 +41,15 @@ namespace Proxy_Server
 
         private void ClientRequestProcessing(Socket client)
         {
-            
             try
             {
                 NetworkStream clientStream = new NetworkStream(client);
-                //string clientRequest = ReadStream(clientStream);
                 byte[] clientRequest;
                 int clientRequestLength;
                 (clientRequest, clientRequestLength) = ReadStream(clientStream);
 
                 if (Encoding.UTF8.GetString(clientRequest).Contains("CONNECT"))
                     return;
-
-                //Console.WriteLine("ЧТО-НИБУДЬ!");
-
-                //Console.WriteLine($"REQUEST\n{clientRequest}");
 
                 HttpRequest httpClientRequest = new HttpRequest(Encoding.UTF8.GetString(clientRequest));
 
@@ -68,21 +59,18 @@ namespace Proxy_Server
                 server.Connect(serverHost);
 
                 NetworkStream serverStream = new NetworkStream(server);
-                clientRequest = Encoding.UTF8.GetBytes(ConvertPath(Encoding.UTF8.GetString(clientRequest)));
+                clientRequest = Encoding.UTF8.GetBytes(httpClientRequest.modifiedRequest);
 
-                Console.WriteLine($"REQUEST\n{Encoding.UTF8.GetString(clientRequest).Split('\0')[0]}");
-
-                //byte[] clientRequestBytes = Encoding.UTF8.GetBytes(clientRequest);
                 serverStream.Write(clientRequest, 0, clientRequest.Length);
 
-                //string serverResponse = ReadStream(serverStream);
-                //byte[] serverResponseBytes = Encoding.UTF8.GetBytes(serverResponse);
                 byte[] serverResponse;
                 int serverResponseLength;
                 (serverResponse, serverResponseLength) = ReadStream(serverStream);
                 clientStream.Write(serverResponse, 0, serverResponseLength);
 
-                Console.WriteLine($"RESPONSE\n{ExtractResponseCode(Encoding.UTF8.GetString(serverResponse))}");
+                Log.LogData(Encoding.UTF8.GetString(clientRequest).Split('\0')[0],
+                    GetResponse(Encoding.UTF8.GetString(serverResponse), httpClientRequest.absolutePath));
+             
                 serverStream.CopyTo(clientStream);
             }
             catch (Exception e)
@@ -93,12 +81,10 @@ namespace Proxy_Server
             {
                 client.Close();
             }
-            //Console.WriteLine("КОНЕЦ ЧТО-НИБУДЬ!");
         }
 
         private (byte[], int) ReadStream(NetworkStream stream)
         {
-            //StringBuilder messageData = new StringBuilder();
             byte[] data = new byte[20 * 1024];
             byte[] buffer = new byte[1024];
             int i = 0;
@@ -109,7 +95,6 @@ namespace Proxy_Server
                     int bytes = stream.Read(buffer, 0, buffer.Length);
                     Array.Copy(buffer, 0, data, i, bytes);
                     i += bytes;
-                    //messageData.Append(Encoding.UTF8.GetString(data, 0, bytes));
                 }
                 while (stream.DataAvailable && i < data.Length);
 
@@ -122,27 +107,23 @@ namespace Proxy_Server
             }
         }
 
-        private string ConvertPath(string input)
+        private static string GetResponse(string response, string requestUri)
         {
-            if (input == null) return null;
+            string[] separators = { "\r", "\n" };
+            string[] lines = response.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-            const string pattern = @"http:\/\/[a-z0-9а-яё\:\.]*";
-            var regex = new Regex(pattern);
+            string preparedResponse = "";
 
-            var matches = regex.Matches(input);
-            string host = matches[0].Value;
-            string result = input.Replace(host, "");
+            preparedResponse = lines[0].Substring(lines[0].IndexOf(" "));
 
-            return result;
-        }
-
-        private static string ExtractResponseCode(string data)
-        {
-            string[] dataArray = data.Split('\r', '\n');
-            int indexCode = dataArray[0].IndexOf(" ", StringComparison.Ordinal) + 1;
-            string code = dataArray[0].Substring(indexCode);
-
-            return code;
+            if (preparedResponse != "")
+            {
+                return $"RESPONSE TO {requestUri}\nStatus: " + preparedResponse;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
