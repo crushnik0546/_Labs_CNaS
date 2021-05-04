@@ -72,14 +72,14 @@ namespace Proxy_Server
                 (serverResponse, serverResponseLength) = ReadStream(serverStream);
                 clientStream.Write(serverResponse, 0, serverResponseLength);
 
-                Log.LogData(Encoding.UTF8.GetString(clientRequest).Split('\0')[0],
-                    GetResponse(Encoding.UTF8.GetString(serverResponse), httpClientRequest.absolutePath));
+                Log.LogData(httpClientRequest.absolutePath,
+                    GetResponse(Encoding.UTF8.GetString(serverResponse), httpClientRequest.host.HostName));
              
                 serverStream.CopyTo(clientStream);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                //Console.WriteLine(e.Message);
             }
             finally
             {
@@ -156,7 +156,7 @@ namespace Proxy_Server
             clientStream.Write(errorResponse, 0, errorResponse.Length);
 
             string response = $"RESPONSE TO {request.host.HostName}\nStatus: 403 Forbidden";
-            Log.LogData(request.modifiedRequest.Split('\0')[0], response);
+            Log.LogData(request.absolutePath, response);
         }
 
         private byte[] LoadErrorPage()

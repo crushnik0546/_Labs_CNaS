@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlackListException.cs" />
     <Compile Include="HttpRequest.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />

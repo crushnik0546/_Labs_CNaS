@@ -61,7 +61,8 @@ namespace Proxy_Server
         }
 
         private string ConvertUri(string request)
-        { 
+        {
+            GetAbsoluteUri(request);
             const string pattern = @"http:\/\/[a-z0-9а-яё\:\.]*";
             Regex regex = new Regex(pattern);
             MatchCollection matches = regex.Matches(request);
@@ -69,7 +70,6 @@ namespace Proxy_Server
             if (matches.Count != 0)
             {
                 string uri = matches[0].Value;
-                absolutePath = uri;
                 string result = request.Replace(uri, "");
 
                 return result;
@@ -78,6 +78,25 @@ namespace Proxy_Server
             {
                 return null;
             }
+        }
+
+        private void GetAbsoluteUri(string request)
+        {
+            string[] separators = { "\r", "\n" };
+            string[] lines = request.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+            string preparedUri = "";
+            foreach(string line in lines)
+            {
+                if (line.Contains("GET "))
+                {
+                    preparedUri = line.Substring(line.IndexOf("GET ") + "GET ".Length);
+                    preparedUri = preparedUri.Substring(0, preparedUri.IndexOf(" "));
+                    break;
+                }
+            }
+
+            absolutePath = preparedUri;
         }
 
     }
