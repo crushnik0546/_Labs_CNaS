@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.StaticFiles;
-using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -14,7 +14,7 @@ namespace FilesStorage.Controllers
     public class RequestController : ControllerBase
     {
         private readonly ILogger<RequestController> _logger;
-        
+        private readonly string PutHeaderCopyFrom = "Copy-File-From";
 
         public RequestController(ILogger<RequestController> logger)
         {
@@ -124,6 +124,45 @@ namespace FilesStorage.Controllers
                 return StatusCode(500);
             }
             
+            return NotFound();
+        }
+
+        [HttpPut("{*path}")]
+        public ActionResult PutFile(IFormFile file, string path)
+        {
+            string fullPath = FileProcessing.GetFullPath(path);
+
+            try
+            {
+                // copy file
+                if (Request.Headers.ContainsKey(PutHeaderCopyFrom))
+                {
+                    FileProcessing.PutCodes resCode = FileProcessing.CopyFile(Request.Headers[PutHeaderCopyFrom], fullPath);
+                    
+                    if (resCode == FileProcessing.PutCodes.DoneCopy)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                // put file
+                else if (Directory.Exists(fullPath))
+                {
+                    using (FileStream fs = new FileStream(Path.Combine(fullPath, file.FileName), FileMode.Create))
+                    {
+                        file.CopyTo(fs);
+                    }
+                    return Ok();
+                }
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+
             return NotFound();
         }
     }

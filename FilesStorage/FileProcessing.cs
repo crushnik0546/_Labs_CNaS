@@ -8,21 +8,27 @@ namespace FilesStorage
     public static class FileProcessing
     {
         private const string Root = @"C:\file_storage";
+        public enum PutCodes
+        {
+            SourceFileDoesntExist = 0,
+            DestDirectoryDoesntExist = 1,
+            DoneCopy = 2
+        }
 
         public static List<string> ProcessDirectory(string directory)
         {
             List<string> result = new List<string>();
 
-            string[] fileEntries = Directory.GetFiles(directory);
-            foreach(string fileName in fileEntries)
-            {
-                result.Add($"File: {Path.GetFileName(fileName)} ");
-            }
-
             string[] directoryEntities = Directory.GetDirectories(directory);
             foreach(string directoryName in directoryEntities)
             {
                 result.Add($"Directory: {new DirectoryInfo(directoryName).Name}");
+            }
+
+            string[] fileEntries = Directory.GetFiles(directory);
+            foreach (string fileName in fileEntries)
+            {
+                result.Add($"File: {Path.GetFileName(fileName)} ");
             }
 
             return result;
@@ -53,6 +59,32 @@ namespace FilesStorage
             header.Add("Last access time: ", fileInfo.LastAccessTime.ToString());
 
             return header;
+        }
+
+        public static PutCodes CopyFile(string srcPath, string destPath)
+        {
+            srcPath = Path.Combine(Root, srcPath);
+
+            if (!File.Exists(srcPath))
+            {
+                return PutCodes.SourceFileDoesntExist;
+            }
+
+            //FileAttributes attributes = File.GetAttributes(destPath);
+            //((attributes & FileAttributes.Directory) == FileAttributes.Directory)
+            if (!Directory.Exists(Path.GetDirectoryName(destPath)))
+            {
+                return PutCodes.DestDirectoryDoesntExist;
+            }
+
+            if (srcPath != destPath)
+            {
+                using FileStream sourceFile = new FileStream(srcPath, FileMode.Open);
+                using FileStream destFile = new FileStream(destPath, FileMode.OpenOrCreate);
+                sourceFile.CopyTo(destFile);
+            }
+            
+            return PutCodes.DoneCopy;
         }
 
     }
