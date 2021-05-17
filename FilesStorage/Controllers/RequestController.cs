@@ -143,6 +143,10 @@ namespace FilesStorage.Controllers
                     {
                         return Ok();
                     }
+                    else if (resCode == FileProcessing.PutCodes.BadRequest)
+                    {
+                        return BadRequest();
+                    }
                     else
                     {
                         return NotFound();

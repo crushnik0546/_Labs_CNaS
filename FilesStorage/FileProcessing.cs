@@ -12,7 +12,8 @@ namespace FilesStorage
         {
             SourceFileDoesntExist = 0,
             DestDirectoryDoesntExist = 1,
-            DoneCopy = 2
+            BadRequest = 2,
+            DoneCopy = 3
         }
 
         public static List<string> ProcessDirectory(string directory)
@@ -28,7 +29,7 @@ namespace FilesStorage
             string[] fileEntries = Directory.GetFiles(directory);
             foreach (string fileName in fileEntries)
             {
-                result.Add($"File: {Path.GetFileName(fileName)} ");
+                result.Add($"File: {Path.GetFileName(fileName)}");
             }
 
             return result;
@@ -70,8 +71,11 @@ namespace FilesStorage
                 return PutCodes.SourceFileDoesntExist;
             }
 
-            //FileAttributes attributes = File.GetAttributes(destPath);
-            //((attributes & FileAttributes.Directory) == FileAttributes.Directory)
+            if (!Path.GetFileName(destPath).Contains("."))
+            {
+                return PutCodes.BadRequest;
+            }
+
             if (!Directory.Exists(Path.GetDirectoryName(destPath)))
             {
                 return PutCodes.DestDirectoryDoesntExist;
