@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace FilesStorage.Controllers
 {
@@ -143,10 +143,12 @@ namespace FilesStorage.Controllers
                     {
                         return Ok();
                     }
+                    // trying delete root folder
                     else if (resCode == FileProcessing.PutCodes.BadRequest)
                     {
                         return BadRequest();
                     }
+                    // directory or file doesnt exist
                     else
                     {
                         return NotFound();

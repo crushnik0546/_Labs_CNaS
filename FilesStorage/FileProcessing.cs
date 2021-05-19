@@ -52,12 +52,12 @@ namespace FilesStorage
             Dictionary<string, string> header = new Dictionary<string, string>();
             FileInfo fileInfo = new FileInfo(filePath);
 
-            header.Add("Name: ", fileInfo.Name);
-            header.Add("Size: ", fileInfo.Length.ToString());
-            header.Add("Extension: ", fileInfo.Extension);
-            header.Add("Creation time: ", fileInfo.CreationTime.ToString());
-            header.Add("Last write time:", fileInfo.LastWriteTime.ToString());
-            header.Add("Last access time: ", fileInfo.LastAccessTime.ToString());
+            header.Add("Name", fileInfo.Name);
+            header.Add("Size", fileInfo.Length.ToString());
+            header.Add("Extension", fileInfo.Extension);
+            header.Add("Creation_time", fileInfo.CreationTime.ToString());
+            header.Add("Last_write_time", fileInfo.LastWriteTime.ToString());
+            header.Add("Last_access_time", fileInfo.LastAccessTime.ToString());
 
             return header;
         }
